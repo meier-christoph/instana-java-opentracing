@@ -107,6 +107,11 @@ public class InstanaSpanBuilder implements Tracer.SpanBuilder {
 
   @Override
   public Scope startActive(boolean finishSpanOnClose) {
+    // hack to confirm bug, should be done in start() after instrumentation
+    Span parent = scopeManager.activeSpan();
+    if (null != parent && null == parentContext && !ignoreActiveSpan) {
+      parentContext = parent.context();
+    }
     return scopeManager.activate(start(), finishSpanOnClose);
   }
 
